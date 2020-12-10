@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.qwert.jst.mapper.JstZcTargetMapper">
+	<resultMap id="JstZcTarget" type="org.jeecg.modules.qwert.jst.entity.JstZcTarget">
+	   <!-- result属性映射非匹配字段 -->
+	</resultMap>
+	<resultMap id="JstZcTarget2" type="org.jeecg.modules.qwert.jst.entity.JstZcTarget2">
+	   <!-- result属性映射非匹配字段 -->
+	</resultMap>
+	<select id="queryJztList" parameterType="Object"  resultMap="JstZcTarget">
+		SELECT * FROM jst_zc_target order by instruct,tmp
+	</select>
+	<select id="queryJztList2" parameterType="Object"  resultMap="JstZcTarget2">
+		SELECT id,target_no,target_name,yinzi FROM jst_zc_target order by instruct,tmp
+	</select>
+
+</mapper>

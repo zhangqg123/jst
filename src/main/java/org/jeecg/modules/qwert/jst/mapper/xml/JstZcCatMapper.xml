@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.qwert.jst.mapper.JstZcCatMapper">
+	<resultMap id="JstZcCat" type="org.jeecg.modules.qwert.jst.entity.JstZcCat">
+	   <!-- result属性映射非匹配字段 -->
+	</resultMap>
+
+	<update id="updateTreeNodeStatus" parameterType="java.lang.String">
+		update jst_zc_cat set has_child = #{status} where id = #{id}
+	</update>
+	<select id="queryJzcList" parameterType="Object"  resultMap="JstZcCat">
+		SELECT * FROM jst_zc_cat where has_child="0" and id>"002"
+	</select>
+
+</mapper>

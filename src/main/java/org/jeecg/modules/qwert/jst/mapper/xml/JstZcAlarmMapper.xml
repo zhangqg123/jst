@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.qwert.jst.mapper.JstZcAlarmMapper">
+	<!-- 通过<resultMap>映射实体类属性名和表的字段名对应关系 -->
+	<resultMap id="JstZcAlarm" type="org.jeecg.modules.qwert.jst.entity.JstZcAlarm">
+	   <!-- result属性映射非匹配字段 -->
+	</resultMap>
+	<select id="queryJzaList" parameterType="Object"  resultMap="JstZcAlarm">
+		SELECT * FROM jst_zc_alarm where send_type>=#{send_type}
+	</select>
+</mapper>

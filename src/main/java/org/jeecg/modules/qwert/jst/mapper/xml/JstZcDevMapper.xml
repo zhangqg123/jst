@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.jeecg.modules.qwert.jst.mapper.JstZcDevMapper">
+	<resultMap id="JstZcDev" type="org.jeecg.modules.qwert.jst.entity.JstZcDev">
+	   <!-- result属性映射非匹配字段 -->
+	</resultMap>
+	<select id="queryJzdList" parameterType="Object"  resultMap="JstZcDev">
+		SELECT * FROM jst_zc_dev where status="0" order by dev_no
+	</select>
+</mapper>
