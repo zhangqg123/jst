@@ -214,9 +214,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 //						Thread.sleep(100);
 //					}
 
-					if (ts > 200) {
-						master.setTimeout(1500);
-					}
+//					if (ts > 200) {
+//						master.setTimeout(1500);
+//					}
 					master.init();
 					int slaveId = 0;
 //					if (isNumeric(slave)) {
@@ -278,7 +278,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 		//							System.out.println(jzd.getDevNo()+"::"+j + "::" + offset);
 									if(tmpOffset>0) {
 										results = master.send(batch);
-										Thread.sleep(200);
+										Thread.sleep(JstConstant.sleeptime);
 										if(results.toString().equals("{}")) {
 								//			revnull=revnull+1;
 											if(offset<100 && offset>0) {
@@ -298,7 +298,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 											resList.add(results.toString());
 										}
 									}
-							//		System.out.println(devNo+"::"+results);
+									if(JstConstant.debugflag==1) {
+										System.out.println(devNo+"::"+results);
+									}
 									batch = new BatchRead<String>();
 									flag = false;
 									tmpOffset = offset;
@@ -370,13 +372,13 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 									batchSend = true;
 								}
 							}
-							Thread.sleep(100);
+							Thread.sleep(JstConstant.sleeptime/2);
 						}
 						if (batchSend == true && alarmFlag==false) {
 						//	for(int n=0;n<3;n++) {
 						//	Thread.sleep(100);
 							results = master.send(batch);
-							Thread.sleep(100);
+							Thread.sleep(JstConstant.sleeptime);
 
 							if(results.toString().equals("{}") && offset<80 && offset>0) {
 									JstZcAlarm jstZcAlarm = new JstZcAlarm();
@@ -392,7 +394,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 							if(!results.toString().equals("{}")) {
 								resList.add(results.toString());
 							}	
-				//			System.out.println(devNo+"::"+results);
+							if(JstConstant.debugflag==1) {
+								System.out.println(devNo+"::"+results);
+							}
 						}
 	//					System.out.println(results);
 		//				System.out.println(devNo+"::resList.size::"+resList.size());
@@ -572,7 +576,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 								}
 							}
 						}
-						Thread.sleep(200);
+						Thread.sleep(JstConstant.sleeptime/2);
 				    }
 				} catch (ModbusInitException e) {
 					e.printStackTrace();
@@ -609,8 +613,14 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 				for (int j = 0; j < jztCollect.size(); j++) {
 					JstZcTarget jzt = jztCollect.get(j);
 					String oidval = jzt.getInstruct();
-					List snmpList = SnmpData.snmpGet(ipAddress, community, oidval,null);
-					
+					List snmpList = null ;
+					try {
+						snmpList = SnmpData.snmpGet(ipAddress, community, oidval,null);
+						Thread.sleep(JstConstant.sleeptime/2);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					if(snmpList.size()>0) {
 						for(int n=0;n<snmpList.size();n++) {
 							resList.add(snmpList.get(n));

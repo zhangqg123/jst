@@ -10,4 +10,6 @@ public class JstConstant  {
     public static int port = 61613;
     public static String destination = "/queue/socket";
     public static String destination2 = "/queue/snmp";
+    public static int debugflag = 1;
+    public static int sleeptime =50;
 }

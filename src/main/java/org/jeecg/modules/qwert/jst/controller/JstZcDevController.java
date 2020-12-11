@@ -39,11 +39,13 @@ import org.jeecg.modules.dbserver.mongo.common.model.Audit;
 import org.jeecg.modules.dbserver.mongo.repository.impl.DemoRepository;
 import org.jeecg.modules.qwert.jst.entity.JstZcAlarm;
 import org.jeecg.modules.qwert.jst.entity.JstZcCat;
+import org.jeecg.modules.qwert.jst.entity.JstZcConfig;
 import org.jeecg.modules.qwert.jst.entity.JstZcDev;
 import org.jeecg.modules.qwert.jst.entity.JstZcRev;
 import org.jeecg.modules.qwert.jst.entity.JstZcTarget;
 import org.jeecg.modules.qwert.jst.service.IJstZcAlarmService;
 import org.jeecg.modules.qwert.jst.service.IJstZcCatService;
+import org.jeecg.modules.qwert.jst.service.IJstZcConfigService;
 import org.jeecg.modules.qwert.jst.service.IJstZcDevService;
 import org.jeecg.modules.qwert.jst.service.IJstZcTargetService;
 import org.jeecg.modules.qwert.jst.utils.JstConstant;
@@ -109,6 +111,8 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 	private IJstZcTargetService jstZcTargetService;
 	@Autowired
 	private IJstZcAlarmService jstZcAlarmService;
+	@Autowired
+	private IJstZcConfigService jstZcConfigService;
     @Autowired
     DemoRepository repository;
     
@@ -165,6 +169,23 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 	@ApiOperation(value = "jst_zc_dev-测试", notes = "jst_zc_dev-测试")
 	@PostMapping(value = "/conntest")
 	public Result<?> conntest(@RequestBody JstZcRev jstZcRev) throws InterruptedException {
+//		JstZcConfig jstZcConfig=new JstZcConfig();
+//		jstZcConfig.setConfigNo("debugflag");
+//		QueryWrapper<JstZcConfig> queryWrapper = QueryGenerator.initQueryWrapper(jstZcConfig, null);
+		List<JstZcConfig> jzConList = jstZcConfigService.list();
+		
+		for (int i=0;i<jzConList.size();i++) {
+			JstZcConfig jc = jzConList.get(i);
+			if(jc.getConfigNo().equals("debugflag")) {
+				JstConstant.debugflag=Integer.parseInt(jc.getConfigValue());
+			}
+			if(jc.getConfigNo().equals("sleeptime")) {
+				JstConstant.sleeptime=Integer.parseInt(jc.getConfigValue());
+			}
+		}
+		long start, end;
+		start = System.currentTimeMillis();
+
 		String devNo=jstZcRev.getDevNo();
 		String conInfo = jstZcRev.getConnInfo();
 		String revList = jstZcRev.getRevList();
@@ -212,9 +233,9 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 //			jztList.sort((x, y) -> Integer.compare(Integer.parseInt(x.getAddress()), Integer.parseInt(y.getAddress())));
 			boolean flag = false;
 			try {
-				if (ts > 200) {
-					master.setTimeout(1000);
-				}
+//				if (ts > 200) {
+//					master.setTimeout(1000);
+//				}
 				master.init();
 				int slaveId = 0;
 //				if (isNumeric(slave)) {
@@ -270,7 +291,7 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 						if (flag == true) {
 					//		System.out.println(i + "::" + offset);
 							results = master.send(batch);
-					//		Thread.sleep(100);
+							Thread.sleep(JstConstant.sleeptime);
 							if(results.toString().equals("{}")) {
 						//		revnull=revnull+1;
 						//		if(revnull>2) {
@@ -280,7 +301,9 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 							}else {
 								resList.add(results.toString());
 							}
-							System.out.println(results);
+							if(JstConstant.debugflag==1) {
+								System.out.println(results);
+							}
 							batch = new BatchRead<String>();
 							flag = false;
 							tmpOffset = offset;
@@ -308,7 +331,7 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 							batch.addLocator(jzt.getId(),
 									BaseLocator.inputRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
 							results = master.send(batch);
-							Thread.sleep(200);
+							Thread.sleep(100);
 							System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
 							res=results.toString();
 							if(!res.equals("{}")) {
@@ -340,7 +363,7 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 							batch.addLocator(jzt.getId(),
 									BaseLocator.holdingRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
 							results = master.send(batch);
-							Thread.sleep(100);
+							Thread.sleep(JstConstant.sleeptime);
 				//			System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
 							res=results.toString();
 							if(!res.equals("{}")) {
@@ -373,17 +396,17 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 							batchSend = true;
 						}
 					}
-					Thread.sleep(100);
+					Thread.sleep(JstConstant.sleeptime/2);
 				}
 				if (batchSend == true) {
 					results = master.send(batch);
-		//			Thread.sleep(100);
+					Thread.sleep(JstConstant.sleeptime);
 					resList.add(results.toString());
 //					System.out.println(devNo+"::"+results);
 				}
-				System.out.println(devNo+"::"+results);
-//				System.out.println("resList.size:" + resList.size());
-				
+				if(JstConstant.debugflag==1) {
+					System.out.println(devNo+"::"+results);
+				}				
 			} catch (ModbusInitException e) {
 				e.printStackTrace();
 			} catch (ModbusTransportException e) {
@@ -416,6 +439,8 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 				}
 			}
 		}
+		end = System.currentTimeMillis();
+		System.out.println("开始时间:" + start + "; 结束时间:" + end + "; 用时:" + (end - start) + "(ms)");
 		return Result.ok(resList);
 	}
 	
