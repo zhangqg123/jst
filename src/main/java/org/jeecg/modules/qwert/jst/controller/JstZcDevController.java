@@ -215,8 +215,8 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 		String community = null;
 		BatchResults<String> results = null;
 		JstZcTarget jztl = jztList.get(jztList.size() - 1);
-	//	boolean extype = (jztl.getDevType().equals("kangmingsipcc3300") || jstZcRev.getDevType() == null);
-		boolean extype = (jztl.getDevType().equals("kangmingsipcc") || jstZcRev.getDevType() == null);
+		boolean extype = (jztl.getDevType().equals("kangmingsipcc3300") || jstZcRev.getDevType() == null);
+	//	boolean extype = (jztl.getDevType().equals("kangmingsipcc") || jstZcRev.getDevType() == null);
 		if (type.equals("SOCKET")) {
 			int ts = Integer.parseInt(jztl.getAddress());
 			slave = jsonConInfo.getString("slave");
@@ -261,20 +261,20 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 					
 					int offset = 0;
 					int len = 0;
-					if (extype) {
-						if(jzt.getDevType().equals("kangmingsipcc3300")) {
-							BigInteger bigint = new BigInteger(oshexs, 16);
-							offset = bigint.intValue();
-							offset = offset + Integer.parseInt(jzt.getOffset())/2;
-							len=(Integer.valueOf(jzt.getLen()))/2;
-						}else {
-							if (jzt.getAddress() != null) {
-								offset = offset + Integer.parseInt(jzt.getAddress());
-							}
-						}
-						tmpInstruct = instruct;
-
-					} else {
+//					if (extype) {
+//						if(jzt.getDevType().equals("kangmingsipcc3300")) {
+//							BigInteger bigint = new BigInteger(oshexs, 16);
+//							offset = bigint.intValue();
+//							offset = offset + Integer.parseInt(jzt.getOffset())/2;
+//							len=(Integer.valueOf(jzt.getLen()))/2;
+//						}else {
+//							if (jzt.getAddress() != null) {
+//								offset = offset + Integer.parseInt(jzt.getAddress());
+//							}
+//						}
+//						tmpInstruct = instruct;
+//
+//					} else {
 
 						if (jzt.getAddress() != null) {
 							offset = offset + Integer.parseInt(jzt.getAddress());
@@ -282,9 +282,14 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 						if (instruct.equals(tmpInstruct) && offset==tmp2Offset) {
 							continue;
 						}
-						if (tmpInstruct!=null && !instruct.equals(tmpInstruct)) {
-							flag = true;
-		//					Thread.sleep(100);
+						if(extype) {
+							if (tmpInstruct!=null && !instruct.equals(tmpInstruct)) {
+								flag = true;
+							}
+						}else {
+							if (tmpInstruct!=null && ts > 200 && offset - tmpOffset >= 80) {
+								flag = true;
+							}
 						}
 						tmpInstruct = instruct;
 						tmp2Offset=offset;
@@ -308,7 +313,7 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 							flag = false;
 							tmpOffset = offset;
 						}
-					}
+//					}
 					
 		/*			if (instruct.equals(tmpInstruct)) {
 						continue;
@@ -325,29 +330,31 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 					Map<String, String> resMap = new HashMap<String, String>();
 
 					if (di.equals("04")) {
-						if (extype) {
-					//		res = ModbusUtil.readInputRegistersTest(master, slaveId, offset, len);
-							batch = new BatchRead<String>();
-							batch.addLocator(jzt.getId(),
-									BaseLocator.inputRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
-							results = master.send(batch);
-							Thread.sleep(100);
-							System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
-							res=results.toString();
-							if(!res.equals("{}")) {
-								res=res.substring(1,res.length()-1);
-								String[] r1 = res.split("=");
-								resMap.put("devNo", devNo);
-								resMap.put("targetNo", targetNo);
-								resMap.put("instruct", tmpInstruct);
-								resMap.put("resData", "["+r1[1]+"]");
-								resList.add(resMap);
-							}
-						} else {
+//						if (extype) {
+//					//		res = ModbusUtil.readInputRegistersTest(master, slaveId, offset, len);
+//							batch = new BatchRead<String>();
+//							batch.addLocator(jzt.getId(),
+//									BaseLocator.inputRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
+//							results = master.send(batch);
+//							Thread.sleep(JstConstant.sleeptime);
+//							if(JstConstant.debugflag==1) {
+//								System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
+//							}
+//							res=results.toString();
+//							if(!res.equals("{}")) {
+//								res=res.substring(1,res.length()-1);
+//								String[] r1 = res.split("=");
+//								resMap.put("devNo", devNo);
+//								resMap.put("targetNo", targetNo);
+//								resMap.put("instruct", tmpInstruct);
+//								resMap.put("resData", "["+r1[1]+"]");
+//								resList.add(resMap);
+//							}
+//						} else {
 							batch.addLocator(jzt.getId(),
 									BaseLocator.inputRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
 							batchSend = true;
-						}
+//						}
 	/*					res = ModbusUtil.readInputRegistersTest(master, slaveId, offset, len);
 						System.out.println(devNo+"::"+tmpInstruct+"::"+res);
 						if(res.equals("devicefail")) {
@@ -357,29 +364,31 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 						resMap.put("resData", res);*/
 					}
 					if (di.equals("03")) {
-						if (extype) {
-					//		res = ModbusUtil.readHoldingRegistersTest(master, slaveId, offset, len);
-							batch = new BatchRead<String>();
-							batch.addLocator(jzt.getId(),
-									BaseLocator.holdingRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
-							results = master.send(batch);
-							Thread.sleep(JstConstant.sleeptime);
-				//			System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
-							res=results.toString();
-							if(!res.equals("{}")) {
-								res=res.substring(1,res.length()-1);
-								String[] r1 = res.split("=");
-								resMap.put("devNo", devNo);
-								resMap.put("targetNo", targetNo);
-								resMap.put("instruct", tmpInstruct);
-								resMap.put("resData", "["+r1[1]+"]");
-								resList.add(resMap);
-							}
-						} else {
+//						if (extype) {
+//					//		res = ModbusUtil.readHoldingRegistersTest(master, slaveId, offset, len);
+//							batch = new BatchRead<String>();
+//							batch.addLocator(jzt.getId(),
+//									BaseLocator.holdingRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
+//							results = master.send(batch);
+//							Thread.sleep(JstConstant.sleeptime);
+//							if(JstConstant.debugflag==1) {
+//								System.out.println(devNo+"::"+targetNo+"::"+tmpInstruct+"::"+results);
+//							}
+//							res=results.toString();
+//							if(!res.equals("{}")) {
+//								res=res.substring(1,res.length()-1);
+//								String[] r1 = res.split("=");
+//								resMap.put("devNo", devNo);
+//								resMap.put("targetNo", targetNo);
+//								resMap.put("instruct", tmpInstruct);
+//								resMap.put("resData", "["+r1[1]+"]");
+//								resList.add(resMap);
+//							}
+//						} else {
 							batch.addLocator(jzt.getId(),
 									BaseLocator.holdingRegister(slaveId, offset, Integer.parseInt(jzt.getDataType())));
 							batchSend = true;
-						}
+//						}
 		/*				res = ModbusUtil.readHoldingRegistersTest(master, slaveId, offset, len);
 						System.out.println(devNo+"::"+tmpInstruct+"::"+res);
 						if(res.equals("devicefail")) {

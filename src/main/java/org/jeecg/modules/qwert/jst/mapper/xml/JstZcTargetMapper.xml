@@ -13,5 +13,8 @@
 	<select id="queryJztList2" parameterType="Object"  resultMap="JstZcTarget2">
 		SELECT id,target_no,target_name,yinzi FROM jst_zc_target order by instruct,tmp
 	</select>
+	<select id="queryJztList3" parameterType="Object"  resultMap="JstZcTarget">
+		SELECT * FROM jst_zc_target where dev_type=#{dev_type} order by instruct,tmp
+	</select>
 
 </mapper>

@@ -16,5 +16,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IJstZcTargetService extends IService<JstZcTarget> {
 	public List<JstZcTarget> queryJztList();
 	public List<JstZcTarget2> queryJztList2();
+	public List<JstZcTarget> queryJztList3(String dev_type);
 	public boolean edit(JstZcTarget jstZcTarget);
 }

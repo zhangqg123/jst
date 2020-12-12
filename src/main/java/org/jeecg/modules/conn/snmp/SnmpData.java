@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.jeecg.modules.qwert.jst.utils.JstConstant;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -92,7 +93,9 @@ public class SnmpData {
 					VariableBinding vb = response.get(i);
 					String oo = vb.getOid() + " = " + vb.getVariable();
 					snmpList.add(oo);
-	//				System.out.println(vb.getOid() + " = " + vb.getVariable());
+					if(JstConstant.debugflag==1) {
+						System.out.println(vb.getOid() + " = " + vb.getVariable());
+					}
 				}
 
 			}

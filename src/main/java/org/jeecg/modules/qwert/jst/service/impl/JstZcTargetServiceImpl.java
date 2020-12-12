@@ -44,10 +44,16 @@ public class JstZcTargetServiceImpl extends ServiceImpl<JstZcTargetMapper, JstZc
 		List<JstZcTarget2> jztList = this.jstZcTargetMapper.queryJztList2();			
 		return jztList;
 	}
+	@Override
+	public List<JstZcTarget> queryJztList3(String dev_type) {
+		List<JstZcTarget> jztList = this.jstZcTargetMapper.queryJztList3(dev_type);			
+		return jztList;
+	}
 	
 //	@CacheEvict(value = CacheConstant.JST_TARGET_CACHE,allEntries=true)
 	@Override
 	public boolean edit(JstZcTarget jstZcTarget) {
 		return this.updateById(jstZcTarget);
 	}
+	
 }
