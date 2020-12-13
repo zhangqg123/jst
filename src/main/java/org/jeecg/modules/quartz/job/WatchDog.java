@@ -202,8 +202,8 @@ public class WatchDog implements Job {
 	
 								if (flag == true) {
 									if(tmpOffset>0) {
-										Thread.sleep(100);
 										results = master.send(batch);
+										Thread.sleep(100);
 										resList.add(results.toString());
 										JstZcAlarm jstZcAlarm = new JstZcAlarm();
 										if(results.toString().equals("{}")) {
