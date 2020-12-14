@@ -140,6 +140,8 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 		List<JstZcCat> jzcCollect = null;
 		int readCount=0;
 		while(allflag&&JstConstant.runflag) {
+			long start, end;
+			start = System.currentTimeMillis();
 			readCount++;
 			if(!catNo.equals("all")) {
 				allflag=false;
@@ -169,6 +171,8 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 					e.printStackTrace();
 				}
 			}
+			end = System.currentTimeMillis();
+			System.out.println("开始时间:" + start + "; 结束时间:" + end + "; 用时:" + (end - start) + "(ms)");
 		}
         connection.close();
 	}
@@ -324,7 +328,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 											jstZcAlarm.setDevNo(devNo);
 											jstZcAlarm.setDevName(devName);
 											jstZcAlarm.setCatNo(catNo);
-											jstZcAlarm.setTargetNo("connection-fail");
+					//						jstZcAlarm.setTargetNo("connection-fail");
+											jstZcAlarm.setTargetNo(targetNos);
+											jstZcAlarm.setAlarmValue("connection-fail");
 											jstZcAlarm.setSendTime(new Date());
 											jstZcAlarm.setSendType("0");
 											jstZcAlarmService.saveSys(jstZcAlarm);
@@ -429,7 +435,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 									jstZcAlarm.setDevNo(devNo);
 									jstZcAlarm.setDevName(devName);
 									jstZcAlarm.setCatNo(catNo);
-									jstZcAlarm.setTargetNo("connection-fail");
+				//					jstZcAlarm.setTargetNo("connection-fail");
+									jstZcAlarm.setTargetNo(targetNos);
+									jstZcAlarm.setAlarmValue("connection-fail");
 									jstZcAlarm.setSendTime(new Date());
 									jstZcAlarm.setSendType("0");
 									jstZcAlarmService.saveSys(jstZcAlarm);
