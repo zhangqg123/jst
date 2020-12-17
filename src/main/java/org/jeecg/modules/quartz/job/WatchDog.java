@@ -143,14 +143,14 @@ public class WatchDog implements Job {
 				BigInteger slavebigint = new BigInteger(slave, 16);
 				slaveId = slavebigint.intValue();
 				BatchRead<String> batch = new BatchRead<String>();
-				if(jztCollect.size()>0) {
+				
+				if(jza.getAlarmValue().equals("connection-fail")&&jztCollect.size()>0) {
 
 					for (int j = 0; j < jztCollect.size(); j++) {
 						JstZcTarget jzt = jztCollect.get(j);
-						if(!jza.getAlarmValue().equals("connection-fail")) {
-							if(jza.getTargetNo().indexOf(jzt.getId())==-1) {
-								continue;
-							}
+
+						if(jza.getTargetNo().indexOf(jzt.getId())==-1) {
+							continue;
 						}
 
 						String di = jzt.getInstruct().substring(0, 2);
@@ -203,26 +203,29 @@ public class WatchDog implements Job {
 						jstZcAlarmService.updateSys(jstZcAlarm);									
 
 	//					jstZcAlarmService.deleteSys(jza.getId());									
+						resList.add(results.toString());
 					}
-					resList.add(results.toString());
-					
-					String alarm=trackAlarm(jztCollect, resList);
-					
-					String[] tmpAlarm = alarm.split("$$");
-					String alarmNo=tmpAlarm[0];
-					String alarmValue=tmpAlarm[1];
-					jstZcAlarm = new JstZcAlarm();
-					if(alarmValue.length()>0) {
-						jstZcAlarm.setDevNo(devNo);
-						jstZcAlarm.setDevName(devName);
-						jstZcAlarm.setCatNo(catNo);
-						jstZcAlarm.setTargetNo(alarmNo);
-						jstZcAlarm.setAlarmValue(alarmValue);
-						jstZcAlarm.setSendTime(new Date());
-						jstZcAlarm.setSendType("2");
-						jstZcAlarmService.saveSys(jstZcAlarm);
+/*					String alarm=null;
+					if(resList.size()>0) {
+						alarm=trackAlarm(jztCollect, resList);
 					}
-					
+					if(alarm!=null) {
+						String[] tmpAlarm = alarm.split("::");
+						String alarmNo=tmpAlarm[0];
+						String alarmValue=tmpAlarm[1];
+						jstZcAlarm = new JstZcAlarm();
+						if(alarmValue.length()>0) {
+							jstZcAlarm.setDevNo(devNo);
+							jstZcAlarm.setDevName(devName);
+							jstZcAlarm.setCatNo(catNo);
+							jstZcAlarm.setTargetNo(alarmNo);
+							jstZcAlarm.setAlarmValue(alarmValue);
+							jstZcAlarm.setSendTime(new Date());
+							jstZcAlarm.setSendType("2");
+							jstZcAlarmService.saveSys(jstZcAlarm);
+						}
+					}
+*/
 					Thread.sleep(500);
 			    }
 			} catch (ModbusInitException e) {
@@ -377,7 +380,10 @@ public class WatchDog implements Job {
 				}
 			}
 		}
-		String alarm=alarmNo+"$$"+alarmValue;
+		String alarm=null;
+		if(alarmValue.length()>0) {
+			alarm=alarmNo+"::"+alarmValue;
+		}
 		return alarm;
 	}
 	

@@ -71,7 +71,13 @@ public class JstZcAlarmController extends JeecgController<JstZcAlarm, IJstZcAlar
 		queryWrapper.between("send_type","0","2");
 		Page<JstZcAlarm> page = new Page<JstZcAlarm>(pageNo, pageSize);
 		IPage<JstZcAlarm> pageList = jstZcAlarmService.page(page, queryWrapper);
-		return Result.ok(pageList,JstConstant.runflag);
+		String rf=JstConstant.devcat;
+		if(JstConstant.runflag==true) {
+			rf+=",true";
+		}else {
+			rf+=",false";
+		}
+		return Result.ok(pageList,rf);
 	}
 	
 	/**
