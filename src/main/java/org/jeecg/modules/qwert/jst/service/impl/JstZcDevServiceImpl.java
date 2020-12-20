@@ -171,6 +171,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 			end = System.currentTimeMillis();
 			System.out.println("开始时间:" + start + "; 结束时间:" + end + "; 用时:" + (end - start) + "(ms)");
 		}
+	//	JstConstant.runflag=false;
         connection.close();
 	}
 
@@ -485,6 +486,57 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 					snmpList = SnmpData.snmpGet(ipAddress, community, oidval,null);
 					if(snmpList.size()>0) {
 						for(int n=0;n<snmpList.size();n++) {
+							if(catNo.equals("MicroHtm")) {
+								String tmpSnmp=(String) snmpList.get(n);
+								if(tmpSnmp!=null) {
+								//	tmpSnmp=tmpSnmp.replaceAll(" ", "");
+									String[] tmps = tmpSnmp.split("=");
+									String t1 = tmps[1].replaceAll(" ", "");
+				//					if(t1.equals("Null")) {
+				//						System.out.println("Null");
+				//					}
+									if(t1!=null&&!t1.equals("Null")) {
+										if(Float.parseFloat(t1)>35||Float.parseFloat(t1)<10) {
+											List<JstZcAlarm> jzaList = jstZcAlarmService.queryJzaList("2");
+											int dealflag=0; //初始状态
+											for(int ai=0;ai<jzaList.size();ai++) {
+												JstZcAlarm jza = jzaList.get(ai);
+												if(jza.getDevNo().equals(devNo)&&jza.getTargetNo().equals(jzt.getTargetNo())) {
+													if(jza.getDealType()=="1") {  //已处理
+														JstZcAlarm jstZcAlarm = new JstZcAlarm();
+														jstZcAlarm.setDevNo(devNo);
+														jstZcAlarm.setDevName(devName);
+														jstZcAlarm.setCatNo(catNo);
+														jstZcAlarm.setTargetNo(jzt.getTargetNo());
+														jstZcAlarm.setAlarmValue(jzt.getTargetName());
+														jstZcAlarm.setSendTime(new Date());
+														jstZcAlarm.setSendType("2");
+														jstZcAlarmService.saveSys(jstZcAlarm);
+														dealflag=2; //已处理
+														break;
+													}else {
+														dealflag=1; //未处理
+														jza.setSendTime(new Date());
+														jstZcAlarmService.updateSys(jza);
+													}
+												}
+											}
+											if(dealflag==0) {
+												JstZcAlarm jstZcAlarm = new JstZcAlarm();
+												jstZcAlarm.setDevNo(devNo);
+												jstZcAlarm.setDevName(devName);
+												jstZcAlarm.setCatNo(catNo);
+												jstZcAlarm.setTargetNo(jzt.getTargetNo());
+												jstZcAlarm.setAlarmValue(jzt.getTargetName());
+												jstZcAlarm.setSendTime(new Date());
+												jstZcAlarm.setSendType("2");
+												jstZcAlarmService.saveSys(jstZcAlarm);
+											}
+										}
+									}
+								}
+//								System.out.println(snmpList.get(n));
+							}
 							resList.add(snmpList.get(n));
 						}
 					}else {

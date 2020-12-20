@@ -383,7 +383,7 @@ public class JstZcDevController extends JeecgController<JstZcDev, IJstZcDevServi
 		}else {
 			String hr = jstZcDevService.handleRead(catNo);
 		}
-		return Result.ok("ok",true);
+		return Result.ok("ok",JstConstant.runflag);
 	}
 	
 	@AutoLog(value = "jst_zc_dev-队列")
