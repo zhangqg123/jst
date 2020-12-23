@@ -80,6 +80,18 @@ public class JstZcAlarmController extends JeecgController<JstZcAlarm, IJstZcAlar
 		return Result.ok(pageList,rf);
 	}
 	
+	@GetMapping(value = "/countList")
+	public Result<?> countList() {
+		List<JstZcAlarm> jzaList = jstZcAlarmService.queryJzaList("2");
+		String rf=JstConstant.devcat;
+		if(JstConstant.runflag==true) {
+			rf+=",true";
+		}else {
+			rf+=",false";
+		}
+		return Result.ok(jzaList,rf);
+	}
+	
 	/**
 	 *   添加
 	 *
