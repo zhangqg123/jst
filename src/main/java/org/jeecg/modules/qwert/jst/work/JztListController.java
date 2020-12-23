@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.qwert.jst.entity.JstZcJg;
 import org.jeecg.modules.qwert.jst.entity.JstZcTarget;
 import org.jeecg.modules.qwert.jst.entity.JstZcTarget2;
+import org.jeecg.modules.qwert.jst.service.IJstZcJgService;
 import org.jeecg.modules.qwert.jst.service.IJstZcTargetService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -50,6 +52,8 @@ import org.jeecg.common.aspect.annotation.AutoLog;
 public class JztListController extends JeecgController<JstZcTarget, IJstZcTargetService> {
 	@Autowired
 	private IJstZcTargetService jstZcTargetService;
+	@Autowired
+	private IJstZcJgService jstZcJgService;
 	
 	/**
 	 * 分页列表查询
@@ -65,4 +69,10 @@ public class JztListController extends JeecgController<JstZcTarget, IJstZcTarget
 		List<JstZcTarget2> jztList = jstZcTargetService.queryJztList2();
 		return Result.ok(jztList);			
 	}
+	@GetMapping(value = "/jlwList")
+	public Result<?> queryJlwList() {
+		List<JstZcJg> jgList = jstZcJgService.list();
+		return Result.ok(jgList);			
+	}
+
 }
