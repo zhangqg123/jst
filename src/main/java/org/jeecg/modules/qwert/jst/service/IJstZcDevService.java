@@ -13,6 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IJstZcDevService extends IService<JstZcDev> {
 	public List<JstZcDev> queryJzdList();
-
+	public List<JstZcDev> queryJmacList();
 	public String handleRead(String catNo);
 }

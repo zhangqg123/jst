@@ -111,6 +111,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 			if(jc.getConfigNo().equals("sleeptime")) {
 				JstConstant.sleeptime=Integer.parseInt(jc.getConfigValue());
 			}
+			if(jc.getConfigNo().equals("poweroff")) {
+				JstConstant.poweroff=Integer.parseInt(jc.getConfigValue());
+			}
 		}
 
 		jzcList = jstZcCatService.queryJzcList();
@@ -309,12 +312,11 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 									if(JstConstant.debugflag==1) {
 										System.out.println("{}:"+targetNos);
 									}
-//									if(offset<100 && offset>0) {
+									if(JstConstant.poweroff==0) {
 										JstZcAlarm jstZcAlarm = new JstZcAlarm();
 										jstZcAlarm.setDevNo(devNo);
 										jstZcAlarm.setDevName(devName);
 										jstZcAlarm.setCatNo(catNo);
-				//						jstZcAlarm.setTargetNo("connection-fail");
 										jstZcAlarm.setTargetNo(targetNos);
 										jstZcAlarm.setAlarmValue("connection-fail");
 										jstZcAlarm.setSendTime(new Date());
@@ -323,7 +325,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 										alarmFlag=true;
 					//					System.out.println(devNo+"::connection-fail");
 					//					break;
-	//								}
+									}
 								}else {
 									resList.add(results.toString());
 								}
@@ -365,7 +367,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 								if(JstConstant.debugflag==1) {
 									System.out.println("{}:"+targetNos);
 								}
-			//					if(offset<80 && offset>0){
+								if(JstConstant.poweroff==0){
 									JstZcAlarm jstZcAlarm = new JstZcAlarm();
 									jstZcAlarm.setDevNo(devNo);
 									jstZcAlarm.setDevName(devName);
@@ -377,7 +379,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 									jstZcAlarm.setSendType("0");
 									jstZcAlarmService.saveSys(jstZcAlarm);
 			//						System.out.println(devNo+"::connection-fail");
-				//				}
+								}
 							}else {
 								resList.add(results.toString());
 							}
@@ -731,6 +733,12 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 			}
 		}
 
+	}
+
+	@Override
+	public List<JstZcDev> queryJmacList() {
+		List<JstZcDev> jmacList = this.jstZcDevMapper.queryJmacList();
+		return jmacList;
 	}
 
 }

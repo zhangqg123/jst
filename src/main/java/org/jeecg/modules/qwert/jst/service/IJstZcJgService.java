@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
  * @Description: jst_zc_jg
  * @Author: jeecg-boot
- * @Date:   2020-12-23
+ * @Date:   2020-12-29
  * @Version: V1.0
  */
 public interface IJstZcJgService extends IService<JstZcJg> {

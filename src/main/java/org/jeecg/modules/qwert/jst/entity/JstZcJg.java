@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: jst_zc_jg
  * @Author: jeecg-boot
- * @Date:   2020-12-23
+ * @Date:   2020-12-29
  * @Version: V1.0
  */
 @Data
@@ -47,6 +47,34 @@ public class JstZcJg implements Serializable {
 	@Excel(name = "微环境温度编号", width = 15)
     @ApiModelProperty(value = "微环境温度编号")
     private java.lang.String whNo;
+	/**列头柜数据点编号*/
+	@Excel(name = "列头柜数据点编号", width = 15)
+    @ApiModelProperty(value = "列头柜数据点编号")
+    private java.lang.String lietouTarget;
+	/**微环境数据点*/
+	@Excel(name = "微环境数据点", width = 15)
+    @ApiModelProperty(value = "微环境数据点")
+    private java.lang.String whTarget;
+	/**有功电度*/
+	@Excel(name = "有功电度", width = 15)
+    @ApiModelProperty(value = "有功电度")
+    private java.lang.String lietouYgdd;
+	/**无功电度*/
+	@Excel(name = "无功电度", width = 15)
+    @ApiModelProperty(value = "无功电度")
+    private java.lang.String lietouWgdd;
+	/**有功功率*/
+	@Excel(name = "有功功率", width = 15)
+    @ApiModelProperty(value = "有功功率")
+    private java.lang.String lietouYggl;
+	/**无功功率*/
+	@Excel(name = "无功功率", width = 15)
+    @ApiModelProperty(value = "无功功率")
+    private java.lang.String lietouWggl;
+	/**功率因数*/
+	@Excel(name = "功率因数", width = 15)
+    @ApiModelProperty(value = "功率因数")
+    private java.lang.String lietouGlys;
 	/**创建人*/
 	@Excel(name = "创建人", width = 15)
     @ApiModelProperty(value = "创建人")

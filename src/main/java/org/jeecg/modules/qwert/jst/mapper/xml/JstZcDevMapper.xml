@@ -7,4 +7,7 @@
 	<select id="queryJzdList" parameterType="Object"  resultMap="JstZcDev">
 		SELECT * FROM jst_zc_dev where status="0" order by dev_no
 	</select>
+	<select id="queryJmacList" parameterType="Object"  resultMap="JstZcDev">
+		select dev_no,dev_name,dev_cat,status from jst_zc_dev where dev_cat like "AMS%" or dev_cat like "PARC%" order by dev_cat
+	</select>
 </mapper>
