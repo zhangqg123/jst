@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface JstZcDevMapper extends BaseMapper<JstZcDev> {
 	public List<JstZcDev> queryJzdList();
+	public List<JstZcDev> queryJzdList2(@Param("dev_cat") String catNo);
 
 	public List<JstZcDev> queryJmacList();
 

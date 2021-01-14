@@ -15,4 +15,5 @@ public interface IJstZcDevService extends IService<JstZcDev> {
 	public List<JstZcDev> queryJzdList();
 	public List<JstZcDev> queryJmacList();
 	public String handleRead(String catNo);
+	List<JstZcDev> queryJzdList2(String catNo);
 }

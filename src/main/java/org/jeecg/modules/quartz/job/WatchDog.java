@@ -95,7 +95,9 @@ public class WatchDog implements Job {
 			String catNo = jza.getCatNo();
 			JstZcDev jstZcDev = jzdList.stream().filter(o -> o.getDevNo().equals(devNo)).findAny().orElse(null);
 			List<JstZcTarget> jztCollect = jztList.stream().filter(u -> catNo.equals(u.getDevType())).collect(Collectors.toList());
-			targetAudit(jza,jstZcDev,jztCollect);
+			if(jstZcDev!=null&&jztCollect.size()>0) {
+				targetAudit(jza,jstZcDev,jztCollect);
+			}
 		}
 		JstConstant.watchdog=false;
 	}

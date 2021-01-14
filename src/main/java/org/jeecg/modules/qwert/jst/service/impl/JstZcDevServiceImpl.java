@@ -93,6 +93,11 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 		List<JstZcDev> jzdList = this.jstZcDevMapper.queryJzdList();
 		return jzdList;
 	}
+	@Override
+	public List<JstZcDev> queryJzdList2(String catNo) {
+		List<JstZcDev> jzdList = this.jstZcDevMapper.queryJzdList2(catNo);
+		return jzdList;
+	}
 	
 	@Override
 	public String handleRead(String catNo) {
@@ -117,7 +122,7 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 		}
 
 		jzcList = jstZcCatService.queryJzcList();
-		jzdList = queryJzdList();
+	//	jzdList = queryJzdList();
 	//	jztList = jstZcTargetService.queryJztList();			
         MyThread mt=new MyThread(allflag,catNo);
         new Thread(mt).start();
@@ -160,7 +165,8 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 					}
 				}
 				JstConstant.devcat=jstZcCat.getZcCatname();
-		        List<JstZcDev> jzdCollect = jzdList.stream().filter(u -> jstZcCat.getOriginId().equals(u.getDevCat())).collect(Collectors.toList());
+//		        List<JstZcDev> jzdCollect = jzdList.stream().filter(u -> jstZcCat.getOriginId().equals(u.getDevCat())).collect(Collectors.toList());
+				List<JstZcDev> jzdCollect = queryJzdList2(jstZcCat.getOriginId());
 //				List<JstZcTarget> jztCollect = jztList.stream().filter(u -> jstZcCat.getOriginId().equals(u.getDevType())).collect(Collectors.toList());
 
 				try {
@@ -597,7 +603,10 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 	                            		break;
 	                            	}
 	                                JstZcTarget item = jztCollect.get(rk+n);
-	                                if(item.getInstruct()!=tmpinstruct||item.getAddress()!=tmpaddress ){
+	                                if(!item.getInstruct().equals(tmpinstruct)){
+	                                    break;
+	                                };
+	                                if(!item.getAddress().equals(tmpaddress)){
 	                                    break;
 	                                };
 
@@ -623,18 +632,22 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 	                                String a5 = binaryStr.substring(a4,a4+1);
 	                                
 									String bjz = item.getCtrlUp();
+									if(item.getId().equals("5800")) {
+										int aaa=2;
+										int ddd=aaa;
+									}
 									if(bjz.indexOf("==")!=-1) {
 										String[] bj = bjz.split("==");
 										if(a5.equals(bj[1])) {
-											alarmNo+=jzt.getId()+",";
-											alarmValue+=jzt.getTargetName()+",";
+											alarmNo+=item.getId()+",";
+											alarmValue+=item.getTargetName()+",";
 										}
 									}
 									if(bjz.indexOf("!=")!=-1) {
 										String[] bj = bjz.split("!=");
 										if(!a5.equals(bj[1])) {
-											alarmNo+=jzt.getId()+",";
-											alarmValue+=jzt.getTargetName()+",";
+											alarmNo+=item.getId()+",";
+											alarmValue+=item.getTargetName()+",";
 										}
 									}
 	                            }
