@@ -15,6 +15,7 @@ public class JstConstant  {
 //    public static String destination2 = "/queue/snmp";
     public static String destination = "/topic/socket";
     public static String destination2 = "/topic/snmp";
+    public static String destination9 = "/topic/alarm";
     public static int debugflag = 1;
     public static int sleeptime =50;
     public static int poweroff =0;

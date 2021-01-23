@@ -18,6 +18,7 @@ import org.jeecg.modules.qwert.jst.utils.JstConstant;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,6 +70,7 @@ public class JstZcAlarmController extends JeecgController<JstZcAlarm, IJstZcAlar
 								   HttpServletRequest req) {
 		QueryWrapper<JstZcAlarm> queryWrapper = QueryGenerator.initQueryWrapper(jstZcAlarm, req.getParameterMap());
 		queryWrapper.between("send_type","0","2");
+	//	queryWrapper.orderByDesc("update_time");
 		Page<JstZcAlarm> page = new Page<JstZcAlarm>(pageNo, pageSize);
 		IPage<JstZcAlarm> pageList = jstZcAlarmService.page(page, queryWrapper);
 		String rf=JstConstant.devcat;

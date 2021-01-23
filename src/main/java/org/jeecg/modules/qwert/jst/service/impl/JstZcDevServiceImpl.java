@@ -197,10 +197,13 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 	public void targetRead(List<JstZcDev> jzdCollect,Session session) throws JMSException {
         Destination dest = new StompJmsDestination(JstConstant.destination);
         Destination dest2 = new StompJmsDestination(JstConstant.destination2);
+        Destination dest9 = new StompJmsDestination(JstConstant.destination9);
         MessageProducer producer = session.createProducer(dest);
         MessageProducer producer2 = session.createProducer(dest2);
+        MessageProducer producer9 = session.createProducer(dest9);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         producer2.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+        producer9.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
 		for (int i = 0; i < jzdCollect.size(); i++) {
 			if(!JstConstant.runflag) {
@@ -421,12 +424,16 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 											jstZcAlarm.setSendType("2");
 											jstZcAlarmService.saveSys(jstZcAlarm);
 											dealflag=2; //已处理
-											break;
+									//		break;
 										}else {
 											dealflag=1; //未处理
 											jza.setSendTime(new Date());
 											jstZcAlarmService.updateSys(jza);
+									        String sendMessage = "[{"+"devNo:\""+devNo+"\","+"devName:\""+devName+"\","+"targetNo:\""+alarmNo+"\","+"alarmValue:\""+alarmValue+"\""+"}]";
+											TextMessage msg = session.createTextMessage(sendMessage);
+											producer9.send(msg);
 										}
+										break;
 									}
 								}
 								if(dealflag==0 || dealflag==2) {
@@ -439,6 +446,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 									jstZcAlarm.setSendTime(new Date());
 									jstZcAlarm.setSendType("2");
 									jstZcAlarmService.saveSys(jstZcAlarm);
+							        String sendMessage = "[{"+"devNo:\""+devNo+"\","+"devName:\""+devName+"\","+"targetNo:\""+alarmNo+"\","+"alarmValue:\""+alarmValue+"\""+"}]";
+									TextMessage msg = session.createTextMessage(sendMessage);
+									producer9.send(msg);
 								}
 							}else {
 								List<JstZcAlarm> jzaList = jstZcAlarmService.queryJzaList("1");
@@ -521,15 +531,19 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 														jstZcAlarm.setSendType("2");
 														jstZcAlarmService.saveSys(jstZcAlarm);
 														dealflag=2; //已处理
-														break;
+												//		break;
 													}else {
 														dealflag=1; //未处理
 														jza.setSendTime(new Date());
 														jstZcAlarmService.updateSys(jza);
+												        String sendMessage = "[{"+"devNo:\""+devNo+"\","+"devName:\""+devName+"\","+"targetNo:\""+jza.getTargetNo()+"\","+"alarmValue:\""+jza.getAlarmValue()+"\""+"}]";
+														TextMessage msg = session.createTextMessage(sendMessage);
+														producer9.send(msg);
 													}
+													break;
 												}
 											}
-											if(dealflag==0) {
+											if(dealflag==0 || dealflag==2) {
 												JstZcAlarm jstZcAlarm = new JstZcAlarm();
 												jstZcAlarm.setDevNo(devNo);
 												jstZcAlarm.setDevName(devName);
@@ -539,6 +553,9 @@ public class JstZcDevServiceImpl extends ServiceImpl<JstZcDevMapper, JstZcDev> i
 												jstZcAlarm.setSendTime(new Date());
 												jstZcAlarm.setSendType("2");
 												jstZcAlarmService.saveSys(jstZcAlarm);
+										        String sendMessage = "[{"+"devNo:\""+devNo+"\","+"devName:\""+devName+"\","+"targetNo:\""+jzt.getTargetNo()+"\","+"alarmValue:\""+jzt.getTargetName()+"\""+"}]";
+												TextMessage msg = session.createTextMessage(sendMessage);
+												producer9.send(msg);
 											}
 										}
 									}
